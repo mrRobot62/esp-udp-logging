@@ -57,6 +57,56 @@ Example:
 
 It is not a huge logging framework. It is just a simple and practical setup that works nice for embedded debugging.
 
+## CSV logging examples
+
+The demo in [`src/main.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/main.cpp) does not only send normal text logs. It also sends two CSV style log lines that are useful for plotting or for checking state changes in the `udp-viewer`.
+
+### Example 1: temperature CSV
+
+This is generated with `CSV_LOG_CLIENT_TEMP(...)`.
+
+```text
+[CSV_CLIENT_PLOT];12482;1471;615;10147;1329;442;2;1;0
+```
+
+Meaning of the values:
+
+- `12482` = hotspot raw ADC value
+- `1471` = hotspot millivolts
+- `615` = hotspot temperature in deci-degrees C, so `61.5C`
+- `10147` = chamber raw ADC value
+- `1329` = chamber millivolts
+- `442` = chamber temperature in deci-degrees C, so `44.2C`
+- `2` = demo state, for example `HEATING`
+- `1` = heater on
+- `0` = door closed
+
+This format is based on the temperature CSV logging style I already use in the bigger dryer project.
+
+### Example 2: logic CSV
+
+This is generated with `CSV_LOG_CLIENT_LOGIC(...)`.
+
+```text
+[CSV_CLIENT_LOGIC];1;1;0;0;1;1;0;2
+```
+
+Meaning of the values:
+
+- `1` = fan12V on
+- `1` = fan230V on
+- `0` = fan230V slow off
+- `0` = motor off
+- `1` = heater on
+- `1` = lamp on
+- `0` = door closed
+- `2` = demo state as integer
+
+So with the current demo you can test both things at once:
+
+- classic readable log text
+- structured CSV data for viewer or plotting
+
 ## How it works
 
 The basic flow is this:
@@ -152,6 +202,7 @@ This repo is meant as a small reference project you can share when somebody asks
 - "How do you do structured logging on an ESP32?"
 - "How do you mirror serial logs to UDP?"
 - "Do you have a minimal WiFi logging example?"
+- "Do you have a small CSV logging example for udp-viewer?"
 
 That was the whole point here.
 
