@@ -82,9 +82,36 @@ inline void logPrintf(const char *tag, const char *level, const char *fmt, ...) 
     va_end(args);
 }
 
+inline void logRawVPrintf(const char *fmt, va_list args) {
+    char line[LOG_CORE_LINEBUF_SIZE];
+
+    va_list args_copy;
+    va_copy(args_copy, args);
+    const int n = vsnprintf(line, sizeof(line), fmt, args_copy);
+    va_end(args_copy);
+    if (n < 0) {
+        return;
+    }
+
+    size_t total = static_cast<size_t>(n);
+    if (total >= sizeof(line)) {
+        total = sizeof(line) - 1;
+    }
+
+    logWriteSerial(line, total);
+    logWriteUdpIfEnabled(line, total);
+}
+
+inline void logRawPrintf(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    logRawVPrintf(fmt, args);
+    va_end(args);
+}
+
 #define RAW(...)                   \
     do {                           \
-        Serial.printf(__VA_ARGS__); \
+        logRawPrintf(__VA_ARGS__); \
     } while (0)
 
 #define INFO(...)                               \
