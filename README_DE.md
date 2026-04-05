@@ -17,6 +17,9 @@ Das Beispiel zeigt dir im Kern zwei Sachen:
 
 Heisst also ganz praktisch: Die Ausgabe landet im seriellen Monitor und, wenn WiFi klappt, auch noch bei deinem UDP-Empfaenger.
 
+## UDP-Log-Viewer
+<img width="2204" height="1594" alt="image" src="https://github.com/user-attachments/assets/7e0450b6-d3ed-464a-83f0-b25407f08f2c" />
+
 ## Was im Repo drin ist
 
 Das Projekt ist absichtlich ueberschaubar.
