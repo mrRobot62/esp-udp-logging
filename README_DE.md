@@ -168,6 +168,9 @@ Genau dafuer ist das hier da.
 - [`src/fsd_udp.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/fsd_udp.cpp)
 - [`platformio.ini`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/platformio.ini)
 
+## Gib mir einen Stern
+Wenn du meine Projekt magst, gib ihnen einen Stern :-)
+
 ## English version
 
 Die englische Version findest du in [`README.md`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/README.md).
