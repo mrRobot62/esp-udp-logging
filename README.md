@@ -130,7 +130,7 @@ If your board is connected and the upload port is configured right, this should 
 
 You can use whatever UDP receiver you like.
 
-For a quick test on your computer, tools like `nc`, `ncat`, `socat`, Wireshark or your own small Python receiver will do the job.
+For a quick test on your computer, tools like `nc`, `ncat`, `socat`, Wireshark or your own small Python receiver will do the job, or you use my own [udp-viewer](https://github.com/mrRobot62/udp-viewer.git) written in Python.
 
 One simple example with netcat can be:
 
@@ -169,6 +169,9 @@ If you want to look at the main files directly:
 - [`include/udp/fsd_udp.h`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/include/udp/fsd_udp.h)
 - [`src/fsd_udp.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/fsd_udp.cpp)
 - [`platformio.ini`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/platformio.ini)
+
+## Give me a star
+If you like my projects give them a star
 
 ## German version
 
