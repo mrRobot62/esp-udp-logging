@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
-#include "log_core.h"
 #include "log_client.h"
+#include "log_core.h"
 #include "log_csv.h"
 #include "udp/fsd_udp.h"
 
@@ -91,7 +91,7 @@ void emit_demo_logs(uint32_t now_ms) {
     }
 }
 
-}
+} // namespace
 
 void setup() {
     Serial.begin(115200);
@@ -116,7 +116,7 @@ void setup() {
 
 void loop() {
     const uint32_t now = millis();
-    if ((now - last_log_ms) >= 2000U) {
+    if ((now - last_log_ms) >= 500U) {
         last_log_ms = now;
         ++counter;
 

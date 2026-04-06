@@ -42,7 +42,7 @@ The project is intentionally small.
   A template file for your local WiFi credentials.
 
 - `platformio.ini`
-  PlatformIO config with the UDP target IP, target port and the compile flag for enabling WiFi logging.
+  PlatformIO config with the UDP target IP, target port and the compile flag for enabling WiFi logging. It now contains one environment for classic ESP32 and one for ESP32-S3.
 
 ## What the logging looks like
 
@@ -188,6 +188,18 @@ pio device monitor
 
 If your board is connected and the upload port is configured right, this should be enough already.
 
+If you want to build for a specific board target, use the environment name directly:
+
+```bash
+pio run -e esp32dev
+pio run -e esp32-s3-devkitc-1
+```
+
+Current targets in this repo:
+
+- `esp32dev`
+- `esp32-s3-devkitc-1`
+
 ## How to receive the UDP logs
 
 You can use whatever UDP receiver you like.
@@ -232,6 +244,7 @@ If you want to look at the main files directly:
 - [`include/udp/fsd_udp.h`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/include/udp/fsd_udp.h)
 - [`src/fsd_udp.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/fsd_udp.cpp)
 - [`platformio.ini`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/platformio.ini)
+- [`CHANGELOG.md`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/CHANGELOG.md)
 
 ## Give me a star
 If you like my projects give them a star
