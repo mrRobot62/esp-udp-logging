@@ -60,19 +60,21 @@ It is not a huge logging framework. It is just a simple and practical setup that
 
 The demo in [`src/main.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/main.cpp) does not only send normal text logs. It also sends two CSV style log lines that are useful for plotting or for checking state changes in the `udp-viewer`.
 
-### Example 1: temperature CSV
-
-This is generated with `CSV_LOG_CLIENT_TEMP(...)`.
-
-```text
-[CSV_CLIENT_PLOT];12482;1471;615;10147;1329;442;2;1;0
-```
 - Format: [xxxxx] this is you filter criteria for UDP-LOG-VIEWER, Semicolon as devider from values. Number of values up to you, but this should be exactly used in the visualization configuration of your graph in UDP-LOG-VIEWER
 - [CSV_CLIENT_PLOT] : Example: this line represent some interesting Numbers created by your client software 
 - [CSV_HOST_PLOT] : Example: this line represent some interesting Numbers created by your host software 
 - [CSV_LONG_TERM_PLOT] : Example: this line represent some interesting Numbers for a long term analysis 
 - [feel_free] : feel free to use filter names as you like :-) 
 
+### Example 1: temperature CSV
+
+This is generated with `CSV_LOG_CLIENT_TEMP(...)`. In this demo, this log lines represent measurements from a client esp32 who send data via UDP
+
+<img width="1582" height="658" alt="udp_log_viewer_plot_measure1" src="https://github.com/user-attachments/assets/1238b9ae-ddcc-4558-8290-7f842e4d69fd" />
+
+```text
+[CSV_CLIENT_PLOT];12482;1471;615;10147;1329;442;2;1;0
+```
 
 Meaning of the values:
 
@@ -90,7 +92,8 @@ This format is based on the temperature CSV logging style I already use in the b
 
 ### Example 2: logic CSV
 
-This is generated with `CSV_LOG_CLIENT_LOGIC(...)`.
+This is generated with `CSV_LOG_CLIENT_LOGIC(...)`. In this demo we try to log GPIO states (HIGH/LOW) and want to visualize them in UDP-LOG_VIEWER as 
+<img width="1769" height="782" alt="udp_log_viewer_logic_signal2" src="https://github.com/user-attachments/assets/810f19b4-f61e-4a76-adb0-5886ad821c76" />
 
 ```text
 [CSV_CLIENT_LOGIC];1;1;0;0;1;1;0;2
