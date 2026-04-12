@@ -79,7 +79,7 @@ Das Ganze soll kein riesiges Logging-Framework sein. Es ist eher eine einfache u
 
 ## CSV-Logging Beispiele
 
-Die Demo in [`src/main.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/main.cpp) sendet nicht nur normale Text-Logs. Sie schickt auch zwei CSV-artige Logzeilen raus, die du fuer Plotting oder fuer Zustandsanzeigen im `udp-viewer` verwenden kannst.
+Die Demo in [`src/main.cpp`](src/main.cpp) sendet nicht nur normale Text-Logs. Sie schickt auch zwei CSV-artige Logzeilen raus, die du fuer Plotting oder fuer Zustandsanzeigen im `udp-viewer` verwenden kannst.
 
 - Format: `[xxxxx]` ist dein Filter-Kriterium fuer den UDP-LOG-VIEWER, die einzelnen Werte werden per Semikolon getrennt
 - `[CSV_CLIENT_PLOT]` : Beispiel fuer interessante Messwerte aus deiner Client-Software
@@ -203,7 +203,7 @@ Das bedeutet:
 - `WIFI_LOGGING_UDP_PORT`
   Das ist der UDP-Port, auf dem dein Empfaenger lauscht.
 
-Ein wichtiges Detail noch: In [`src/fsd_udp.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/fsd_udp.cpp) ist auch eine Default-Ziel-IP plus Port hinterlegt.
+Ein wichtiges Detail noch: In [`src/fsd_udp.cpp`](src/fsd_udp.cpp) ist auch eine Default-Ziel-IP plus Port hinterlegt.
 
 Wenn du also gar nichts machst, gibt es trotzdem einen eingebauten Fallback. Im normalen Einsatz werden diese Werte aber ueber die Compiler-Defines aus der `platformio.ini` ueberschrieben.
 
@@ -259,12 +259,12 @@ Viel Spass damit .....
 
 Wenn du direkt in die wichtigen Dateien schauen willst:
 
-- [`src/main.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/main.cpp)
-- [`include/log_core.h`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/include/log_core.h)
-- [`include/udp/fsd_udp.h`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/include/udp/fsd_udp.h)
-- [`src/fsd_udp.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/fsd_udp.cpp)
-- [`platformio.ini`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/platformio.ini)
-- [`CHANGELOG.md`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/CHANGELOG.md)
+- [`src/main.cpp`](src/main.cpp)
+- [`include/log_core.h`](include/log_core.h)
+- [`include/udp/fsd_udp.h`](include/udp/fsd_udp.h)
+- [`src/fsd_udp.cpp`](src/fsd_udp.cpp)
+- [`platformio.ini`](platformio.ini)
+- [`CHANGELOG.md`](CHANGELOG.md)
 
 ## Gib mir einen Stern
 
@@ -272,4 +272,4 @@ Wenn dir meine Projekte gefallen, gib ihnen gern einen Stern.
 
 ## Englische Version
 
-Wenn du dieselbe Readme auf Englisch lesen willst, schau in [`README.md`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/README.md).
+Wenn du dieselbe Readme auf Englisch lesen willst, schau in [`README.md`](README.md).
