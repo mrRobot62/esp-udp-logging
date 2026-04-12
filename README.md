@@ -243,7 +243,13 @@ nc -ul 10514
 
 Depending on your system, you maybe need `ncat` instead of `nc`, but the idea is the same: open a UDP listener on the port from `platformio.ini`.
 
-## Related files
+# Ready to start with your UDP-LOG-VIEWER
+If you get messages on you PC, now it's time to use the UDP-LOG-VIEWER.
+Feel free to play around your embedded system, try to change values on your embedded system, analyze them with your UDP-LOG-VIEWER.
+
+Be happy .....
+
+# Related files
 
 If you want to look at the main files directly:
 
