@@ -1,52 +1,69 @@
 # esp-udp-logging
 
-Wenn du das UDP-Logging direkt mit einem Desktop-Viewer testen willst, schau dir am besten zuerst das passende Begleitprojekt an:
+Wenn du das UDP-Logging direkt mit einem Desktop-Viewer testen willst, schau dir zuerst das Begleitprojekt an:
 
 [udp-viewer](https://github.com/mrRobot62/udp-viewer.git)
 
-Genau dafuer ist dieses Demo hier auch gedacht: Du flashst das Projekt auf einen ESP32, der ESP32 sendet UDP-Logpakete raus, und im `udp-viewer` kannst du das Ergebnis direkt anschauen.
+**Genau dafuer ist dieses Demo-Repo gedacht: Du flashst es auf einen ESP32, laesst den Controller UDP-Logpakete senden und kannst das Ergebnis direkt im `udp-viewer` pruefen.**
 
-Wenn du einfach ein kleines ESP32-Beispiel suchst, mit dem du strukturiert auf `Serial` loggen und dieselben Meldungen optional per UDP ueber WiFi rausschicken kannst, dann ist dieses Repo genau dafuer gedacht.
+Wenn du einfach nur ein kleines ESP32-Beispiel suchst fuer strukturiertes Logging auf `Serial` und optionales UDP-Logging ueber WiFi, dann passt dieses Projekt ziemlich gut.
 
-Ich habe das Projekt bewusst klein gehalten. Die Basis kommt aus meinem groesseren `FilamentSilicatDryer_480x480` Projekt, aber hier ist alles so weit reduziert, dass man das Prinzip schnell versteht, ohne sich erst durch die komplette Anwendungslogik zu arbeiten.
+Ich habe das Repo bewusst kompakt gehalten. Die Basis kommt aus meinem groesseren `FilamentSilicatDryer_480x480` Projekt, aber hier ist alles so weit abgespeckt, dass man das Prinzip schnell versteht, ohne sich erst durch eine komplette Anwendung zu wuehlen.
 
-Das Beispiel zeigt dir im Kern zwei Sachen:
+Dieses Beispiel zeigt im Wesentlichen zwei Dinge:
 
-- wie du mit Makros wie `INFO(...)`, `WARN(...)`, `ERR(...)` sauber loggen kannst
-- wie dieselben Logzeilen parallel als UDP-Pakete verschickt werden koennen
+- wie du strukturierte Logmeldungen wie `INFO(...)`, `WARN(...)` oder `ERR(...)` schreiben kannst
+- wie dieselben Logzeilen auch per UDP ueber WiFi verschickt werden koennen
 
-Heisst also ganz praktisch: Die Ausgabe landet im seriellen Monitor und, wenn WiFi klappt, auch noch bei deinem UDP-Empfaenger.
+Heisst praktisch: Die Ausgabe landet im seriellen Monitor und, wenn WiFi verfuegbar ist, zusaetzlich bei deinem UDP-Empfaenger.
 
-## UDP-Log-Viewer
-<img width="2204" height="1594" alt="image" src="https://github.com/user-attachments/assets/7e0450b6-d3ed-464a-83f0-b25407f08f2c" />
+## Warum es dieses Repo gibt
 
-## Was im Repo drin ist
+Man will nicht immer auf ein grosses Produktivprojekt verweisen, nur um ein kleines Thema zu erklaeren.
 
-Das Projekt ist absichtlich ueberschaubar.
+Dieses Repo ist als kleine Referenz gedacht, die du weitergeben kannst, wenn jemand fragt:
+
+- "Wie machst du strukturiertes Logging auf einem ESP32?"
+- "Wie spiegelst du Serial-Logs auf UDP?"
+- "Hast du ein minimales WiFi-Logging-Beispiel?"
+- "Hast du ein kleines CSV-Logging-Beispiel fuer den udp-viewer?"
+
+Genau dafuer ist das hier da.
+
+## Hinweise
+
+- Das Projekt will kein vollwertiges, wiederverwendbares Library-Paket sein.
+- Es ist in erster Linie ein kleines Demo-Projekt.
+- Der Code ist absichtlich nah am Stil des Ursprungsprojekts gehalten, damit der Uebergang leicht faellt.
+- Der WiFi-Verbindungsaufbau blockiert beim Start kurz. Fuer ein Demo ist das voellig okay.
+
+## Was in diesem Projekt drin ist
+
+Das Projekt ist absichtlich klein und nicht mehr als ein Beispiel-Demo.
 
 - `src/main.cpp`
-  Das eigentliche Mini-Beispiel. Hier wird `Serial` gestartet, UDP initialisiert und es werden im Loop ein paar Demo-Logs erzeugt.
+  Das ist die Beispielanwendung. Sie startet `Serial`, initialisiert UDP-Logging und erzeugt im Loop ein paar Demo-Logmeldungen.
 
 - `include/log_core.h`
-  Das ist der zentrale Logging-Baustein. Hier sind `INFO`, `DBG`, `WARN`, `ERR` definiert.
+  Das ist der zentrale Logging-Helfer. Hier sind Makros wie `INFO`, `DBG`, `WARN` und `ERR` definiert.
 
 - `include/udp/fsd_udp.h`
-  Das kleine Interface fuer den UDP-Teil.
+  Kleines oeffentliches Header-Interface fuer den UDP-Helfer.
 
 - `src/fsd_udp.cpp`
-  Hier steckt die WiFi- und UDP-Implementierung drin. Also Verbindung aufbauen, UDP vorbereiten und Daten verschicken.
+  Die WiFi- und UDP-Implementierung. Sie verbindet den ESP32 mit deinem WLAN und verschickt Logzeilen als UDP-Pakete.
 
 - `include/wifi_secrets.h.example`
-  Vorlage fuer deine lokalen WLAN-Zugangsdaten.
+  Eine Vorlage fuer deine lokalen WiFi-Zugangsdaten.
 
 - `platformio.ini`
-  PlatformIO-Konfiguration mit Ziel-IP, Ziel-Port und dem Schalter fuer WiFi-Logging. Dort gibt es jetzt ein Environment fuer ESP32 und eines fuer ESP32-S3.
+  PlatformIO-Konfiguration mit Ziel-IP, Ziel-Port und dem Compile-Flag fuer aktiviertes WiFi-Logging. Inzwischen gibt es dort ein Environment fuer klassischen ESP32 und eines fuer ESP32-S3.
 
-## Wie die Logs aussehen
+## Wie das Logging aussieht
 
-Die Logzeilen haben einen Prefix, damit du direkt siehst, was fuer eine Meldung das ist.
+Die Logs bekommen einen Prefix, damit du direkt siehst, was fuer eine Meldung es ist.
 
-Beispiel:
+**Beispiel:**
 
 ```text
 [MAIN/INFO] Booting esp-udp-logging example
@@ -55,15 +72,26 @@ Beispiel:
 [MAIN/WARN] Periodic warning example, counter=5
 ```
 
-Das soll kein riesiges Logging-Framework sein. Es ist eher eine einfache, praktische Loesung fuer Embedded-Debugging.
+- `[xxxxx]` - hier kannst du selbst festlegen, welche Information du an der Stelle haben willst
+- `[MAIN/INFO]` - dieser Text laesst sich im UDP-LOG-VIEWER auch gut als Filter verwenden
+
+Das Ganze soll kein riesiges Logging-Framework sein. Es ist eher eine einfache und praktische Loesung fuer Embedded-Debugging.
 
 ## CSV-Logging Beispiele
 
-Die Demo in [`src/main.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/main.cpp) sendet nicht nur normale Text-Logs, sondern auch zwei CSV-artige Logzeilen. Genau das ist praktisch, wenn du die Daten im `udp-viewer` anschauen oder spaeter weiterverarbeiten willst.
+Die Demo in [`src/main.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/main.cpp) sendet nicht nur normale Text-Logs. Sie schickt auch zwei CSV-artige Logzeilen raus, die du fuer Plotting oder fuer Zustandsanzeigen im `udp-viewer` verwenden kannst.
+
+- Format: `[xxxxx]` ist dein Filter-Kriterium fuer den UDP-LOG-VIEWER, die einzelnen Werte werden per Semikolon getrennt
+- `[CSV_CLIENT_PLOT]` : Beispiel fuer interessante Messwerte aus deiner Client-Software
+- `[CSV_HOST_PLOT]` : Beispiel fuer interessante Messwerte aus deiner Host-Software
+- `[CSV_LONG_TERM_PLOT]` : Beispiel fuer Werte, die du fuer Langzeitanalyse loggen willst
+- `[feel_free]` : die Namen der Filter kannst du natuerlich frei gestalten :-)
 
 ### Beispiel 1: Temperatur-CSV
 
-Diese Zeile wird mit `CSV_LOG_CLIENT_TEMP(...)` erzeugt.
+Diese Zeile wird mit `CSV_LOG_CLIENT_TEMP(...)` erzeugt. In dieser Demo repraesentieren die Werte Messungen von einem Client-ESP32, der seine Daten per UDP sendet.
+
+<img width="1582" height="658" alt="udp_log_viewer_plot_measure1" src="https://github.com/user-attachments/assets/1238b9ae-ddcc-4558-8290-7f842e4d69fd" />
 
 ```text
 [CSV_CLIENT_PLOT];12482;1471;615;10147;1329;442;2;1;0
@@ -81,11 +109,13 @@ Bedeutung der Werte:
 - `1` = Heater an
 - `0` = Door geschlossen
 
-Das Format ist an das Temperatur-CSV-Logging aus dem groesseren Dryer-Projekt angelehnt.
+Dieses Format ist an das Temperatur-CSV-Logging angelehnt, das ich auch im groesseren Dryer-Projekt verwende.
 
 ### Beispiel 2: Logic-CSV
 
-Diese Zeile wird mit `CSV_LOG_CLIENT_LOGIC(...)` erzeugt.
+Diese Zeile wird mit `CSV_LOG_CLIENT_LOGIC(...)` erzeugt. In dieser Demo versuchen wir GPIO-Zustaende bzw. HIGH/LOW-Signale zu loggen und sie im UDP-LOG-VIEWER sichtbar zu machen.
+
+<img width="1769" height="782" alt="udp_log_viewer_logic_signal2" src="https://github.com/user-attachments/assets/810f19b4-f61e-4a76-adb0-5886ad821c76" />
 
 ```text
 [CSV_CLIENT_LOGIC];1;1;0;0;1;1;0;2
@@ -102,36 +132,48 @@ Bedeutung der Werte:
 - `0` = Door geschlossen
 - `2` = Demo-State als Integer
 
-Du kannst mit der aktuellen Demo also beides gleichzeitig testen:
+Mit der aktuellen Demo kannst du also beides gleichzeitig testen:
 
-- gut lesbare normale Logtexte
+- klassisch lesbare Logtexte
 - strukturierte CSV-Daten fuer Viewer oder Plotting
 
-## Wie das Ganze funktioniert
+## UDP-LOG-VIEWER konfigurieren
 
-Der Ablauf ist ziemlich simpel:
+Wenn du diese Demo zusammen mit dem UDP-LOG-VIEWER verwenden willst, solltest du die Graphen dort passend konfigurieren.
+
+### Konfiguration PLOT-Visualizer
+
+<img width="1372" height="860" alt="image" src="https://github.com/user-attachments/assets/0a014dca-baef-4f3f-ad80-e2f46e11d0d2" />
+
+### Konfiguration LOGIC-Visualizer
+
+<img width="1372" height="860" alt="image" src="https://github.com/user-attachments/assets/ed71a0da-6213-422e-b73c-e7ccb7067a82" />
+
+## Wie es funktioniert
+
+Der grundsaetzliche Ablauf ist dieser:
 
 1. `Serial.begin(115200)` startet die serielle Ausgabe.
-2. `udp::begin("CLIENT")` versucht, das WLAN aufzubauen und UDP vorzubereiten.
+2. `udp::begin("CLIENT")` versucht, WiFi zu verbinden und UDP vorzubereiten.
 3. `INFO(...)`, `WARN(...)`, `DBG(...)` formatieren die Zeile genau einmal.
-4. Die Zeile geht auf `Serial`.
-5. Falls UDP aktiv ist und WiFi steht, geht dieselbe Zeile auch noch als UDP-Paket raus.
+4. Die Zeile wird auf `Serial` geschrieben.
+5. Wenn UDP-Logging aktiviert ist und WiFi verbunden ist, wird dieselbe Zeile auch per UDP verschickt.
 
-Du brauchst also nicht getrennt fuer Serial und Netzwerk zu loggen. Ein Log-Aufruf reicht.
+Du brauchst also keine getrennten Log-Aufrufe fuer Serial und Netzwerk. Ein Log-Aufruf reicht.
 
-## Einrichtung
+## Setup
 
-Bevor du das Projekt baust, mach einmal kurz Folgendes:
+Bevor du das Projekt baust, mach das einmal:
 
-1. `include/wifi_secrets.h.example` nach `include/wifi_secrets.h` kopieren
-2. WLAN-Name und Passwort eintragen
-3. `platformio.ini` oeffnen
-4. Ziel-IP fuer deinen UDP-Empfaenger anpassen
-5. Falls noetig den UDP-Port anpassen
+1. Kopiere `include/wifi_secrets.h.example` nach `include/wifi_secrets.h`
+2. Trage deinen WiFi-Namen und dein Passwort ein
+3. Oeffne `platformio.ini`
+4. Passe die Ziel-IP fuer deinen UDP-Log-Empfaenger an
+5. Passe bei Bedarf den UDP-Port an
 
-Die lokale `wifi_secrets.h` ist absichtlich in `.gitignore`, damit echte Zugangsdaten nicht versehentlich im Repo landen.
+Deine lokale `wifi_secrets.h` ist absichtlich per Git ignoriert, damit echte Zugangsdaten nicht im Repo landen.
 
-## Beispiel fuer `wifi_secrets.h`
+## Beispiel `wifi_secrets.h`
 
 ```cpp
 #pragma once
@@ -140,9 +182,9 @@ Die lokale `wifi_secrets.h` ist absichtlich in `.gitignore`, damit echte Zugangs
 #define WIFI_PASS "DEIN_WIFI_PASSWORT"
 ```
 
-## Wichtige Stellen in der `platformio.ini`
+## PlatformIO-Konfiguration
 
-Dort findest du diese Eintraege:
+In `platformio.ini` findest du diese wichtigen Einstellungen:
 
 ```ini
 -DWIFI_LOGGING_ENABLE=1
@@ -150,26 +192,26 @@ Dort findest du diese Eintraege:
 -DWIFI_LOGGING_UDP_PORT=10514
 ```
 
-Kurz gesagt:
+Das bedeutet:
 
 - `WIFI_LOGGING_ENABLE=1`
   WiFi- bzw. UDP-Logging wird mit einkompiliert.
 
 - `WIFI_LOGGING_UDP_IP`
-  Das ist die IP von deinem Rechner oder deinem Logging-Server.
+  Das ist die IP deines PCs oder deines Logging-Servers.
 
 - `WIFI_LOGGING_UDP_PORT`
   Das ist der UDP-Port, auf dem dein Empfaenger lauscht.
 
-Ein wichtiges Detail noch: In [`src/fsd_udp.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/fsd_udp.cpp) ist ebenfalls eine Default-IP und ein Default-Port hinterlegt.
+Ein wichtiges Detail noch: In [`src/fsd_udp.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/fsd_udp.cpp) ist auch eine Default-Ziel-IP plus Port hinterlegt.
 
-Wenn du also gar nichts an den Build-Flags aenderst, gibt es trotzdem einen eingebauten Fallback. Im normalen Einsatz werden diese Default-Werte aber ueber die Compiler-Direktiven aus der `platformio.ini` ueberschrieben.
+Wenn du also gar nichts machst, gibt es trotzdem einen eingebauten Fallback. Im normalen Einsatz werden diese Werte aber ueber die Compiler-Defines aus der `platformio.ini` ueberschrieben.
 
-Wenn du WiFi-Logging abschaltest, funktioniert das serielle Logging trotzdem weiter. Das macht das Beispiel etwas flexibler.
+Wenn du WiFi-Logging deaktivierst, funktioniert das serielle Logging trotzdem weiter. Das macht die Demo flexibel.
 
 ## Build und Upload
 
-Die normalen PlatformIO-Kommandos sind:
+Die ueblichen PlatformIO-Kommandos:
 
 ```bash
 pio run
@@ -177,9 +219,9 @@ pio run -t upload
 pio device monitor
 ```
 
-Wenn dein Board angeschlossen ist und der Port passt, reicht das im Normalfall schon.
+Wenn dein Board angeschlossen ist und der Upload-Port stimmt, reicht das normalerweise schon.
 
-Wenn du gezielt fuer ein bestimmtes Board bauen willst, kannst du das Environment direkt angeben:
+Wenn du gezielt fuer ein bestimmtes Board bauen willst, nutze direkt den Environment-Namen:
 
 ```bash
 pio run -e esp32dev
@@ -195,38 +237,27 @@ Aktuelle Targets in diesem Repo:
 
 Du kannst jeden beliebigen UDP-Empfaenger verwenden.
 
-Zum schnellen Testen auf dem Rechner gehen zum Beispiel `nc`, `ncat`, `socat`, Wireshark oder auch ein kleines eigenes Python-Skript.
+Zum schnellen Testen am Rechner funktionieren z. B. `nc`, `ncat`, `socat`, Wireshark oder auch ein eigenes kleines Python-Skript. Oder du nutzt direkt meinen [udp-viewer](https://github.com/mrRobot62/udp-viewer.git), geschrieben in Python.
 
-Ein ganz einfacher Start waere zum Beispiel:
+**Ein einfaches Beispiel mit netcat:**  
+(nur um kurz zu pruefen, ob dein PC ueberhaupt UDP-Messages bekommt - fuer Windows habe ich gerade keinen guten Tipp :-/ )
 
 ```bash
 nc -ul 10514
 ```
 
-Je nach System brauchst du vielleicht `ncat` statt `nc`, aber die Idee bleibt gleich: einfach einen UDP-Listener auf dem konfigurierten Port starten.
+Je nach System brauchst du vielleicht `ncat` statt `nc`, aber die Idee ist dieselbe: einfach einen UDP-Listener auf dem Port aus `platformio.ini` starten.
 
-## Warum es dieses Repo gibt
+# Bereit fuer deinen UDP-LOG-VIEWER
 
-Man will nicht jedes Mal auf ein grosses Produktivprojekt verweisen, nur um kurz zu zeigen, wie Logging oder UDP-Mirroring funktioniert.
+Wenn du Nachrichten auf deinem PC bekommst, ist es Zeit fuer den UDP-LOG-VIEWER.
+Spiel ein bisschen mit deinem Embedded-System, veraendere Werte und schau dir an, wie sich das im UDP-LOG-VIEWER verhaelt.
 
-Dieses Repo ist genau dafuer gedacht. Du kannst es weitergeben, wenn dich jemand fragt:
+Viel Spass damit .....
 
-- "Wie machst du strukturiertes Logging auf dem ESP32?"
-- "Wie spiegelst du Serial-Logs auf UDP?"
-- "Hast du ein kleines WiFi-Logging-Beispiel?"
-- "Hast du ein kleines CSV-Logging-Beispiel fuer den udp-viewer?"
+# Relevante Dateien
 
-Genau dafuer ist das hier da.
-
-## Noch ein paar Hinweise
-
-- Das Projekt will kein vollwertiges Library-Paket sein.
-- Es ist in erster Linie ein kleines Beispielprojekt.
-- Der Stil ist absichtlich nah am Ursprungsprojekt gehalten, damit der Uebergang spaeter leicht faellt.
-- Der WLAN-Verbindungsaufbau blockiert beim Start kurz. Fuer ein Demo ist das voellig okay.
-- Wenn kein WiFi da ist, laeuft das Beispiel trotzdem weiter und `Serial`-Logging bleibt nutzbar.
-
-## Direkt zu den relevanten Dateien
+Wenn du direkt in die wichtigen Dateien schauen willst:
 
 - [`src/main.cpp`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/src/main.cpp)
 - [`include/log_core.h`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/include/log_core.h)
@@ -236,8 +267,9 @@ Genau dafuer ist das hier da.
 - [`CHANGELOG.md`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/CHANGELOG.md)
 
 ## Gib mir einen Stern
-Wenn du meine Projekt magst, gib ihnen einen Stern :-)
 
-## English version
+Wenn dir meine Projekte gefallen, gib ihnen gern einen Stern.
 
-Die englische Version findest du in [`README.md`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/README.md).
+## Englische Version
+
+Wenn du dieselbe Readme auf Englisch lesen willst, schau in [`README.md`](/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging/README.md).
