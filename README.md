@@ -4,7 +4,7 @@ If you want to test the UDP logging directly with a desktop viewer, have a look 
 
 [udp-viewer](https://github.com/mrRobot62/udp-viewer.git)
 
-This demo repo is meant exactly for that use-case too: you flash it to an ESP32, let it send UDP log packets, and then you can check the result directly in the `udp-viewer`.
+**This demo repo is meant exactly for that use-case too: you flash it to an ESP32, let it send UDP log packets, and then you can check the result directly in the `udp-viewer`.**
 
 If you just want a very small ESP32 example for structured logging on `Serial` and optional UDP logging over WiFi, this project is for you.
 
@@ -17,9 +17,29 @@ This example shows you mainly two things:
 
 So the output can go to the serial monitor and, if WiFi is available, to a UDP log receiver at the same time.
 
-## What is inside
+## Why this repo exists
 
-The project is intentionally small.
+Sometimes you don't want to point somebody to a full production project only to explain one small topic.
+
+This repo is meant as a small reference project you can share when somebody asks:
+
+- "How do you do structured logging on an ESP32?"
+- "How do you mirror serial logs to UDP?"
+- "Do you have a minimal WiFi logging example?"
+- "Do you have a small CSV logging example for udp-viewer?"
+
+That was the whole point here.
+
+## Notes
+
+- This project is not trying to be a full reusable library package.
+- It is a small example first.
+- The code is kept close to the original project style, so moving between demo and real project is easy.
+- The WiFi connect is blocking for a short time during startup. For a demo, that is okay.
+
+## What is inside of this project
+
+The project is intentionally small and nothing more as an example demo
 
 - `src/main.cpp`
   This is the example application. It starts `Serial`, initializes UDP logging and prints a few demo log messages in the loop.
@@ -43,7 +63,7 @@ The project is intentionally small.
 
 The logs are written with a prefix, so you can see directly what kind of message it is.
 
-Example:
+**Example:**
 
 ```text
 [MAIN/INFO] Booting esp-udp-logging example
@@ -214,7 +234,8 @@ You can use whatever UDP receiver you like.
 
 For a quick test on your computer, tools like `nc`, `ncat`, `socat`, Wireshark or your own small Python receiver will do the job, or you use my own [udp-viewer](https://github.com/mrRobot62/udp-viewer.git) written in Python.
 
-One simple example with netcat can be:
+**One simple example with netcat can be:**
+(only checking if your PC get UDP messages - I don't know how to do this on Windows :-/)
 
 ```bash
 nc -ul 10514
@@ -222,26 +243,12 @@ nc -ul 10514
 
 Depending on your system, you maybe need `ncat` instead of `nc`, but the idea is the same: open a UDP listener on the port from `platformio.ini`.
 
-## Why this repo exists
-
-Sometimes you don't want to point somebody to a full production project only to explain one small topic.
-
-This repo is meant as a small reference project you can share when somebody asks:
-
-- "How do you do structured logging on an ESP32?"
-- "How do you mirror serial logs to UDP?"
-- "Do you have a minimal WiFi logging example?"
-- "Do you have a small CSV logging example for udp-viewer?"
-
-That was the whole point here.
-
 ## Notes
 
 - This project is not trying to be a full reusable library package.
 - It is a small example first.
 - The code is kept close to the original project style, so moving between demo and real project is easy.
 - The WiFi connect is blocking for a short time during startup. For a demo, that is okay.
-- If WiFi is not available, the example continues and serial logging still works.
 
 ## Related files
 
