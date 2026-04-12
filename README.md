@@ -116,10 +116,12 @@ So with the current demo you can test both things at once:
 - structured CSV data for viewer or plotting
 
 ## Configure the UDP-LOG-VIEWER
-- Config PLOT-Visualizer
+If you want to use this demo with UDP-LOG-Viewer you should configure the graphs inside UDP-LOG-VIEWER
+
+### Config PLOT-Visualizer
 <img width="1372" height="860" alt="image" src="https://github.com/user-attachments/assets/0a014dca-baef-4f3f-ad80-e2f46e11d0d2" />
 
-- Config LOGIC-Visualizer
+### Config LOGIC-Visualizer
 <img width="1372" height="860" alt="image" src="https://github.com/user-attachments/assets/ed71a0da-6213-422e-b73c-e7ccb7067a82" />
 
 ## How it works
