@@ -51,6 +51,8 @@ Example:
 [MAIN/DEBUG] Debug log example, free_heap=231456
 [MAIN/WARN] Periodic warning example, counter=5
 ```
+- [xxxxx] - up to you what kind of info do you want to insert here
+- [MAIN/INFO] - this text can be used as filter inside the UDP-LOG-VIEWER.
 
 It is not a huge logging framework. It is just a simple and practical setup that works nice for embedded debugging.
 
@@ -65,6 +67,12 @@ This is generated with `CSV_LOG_CLIENT_TEMP(...)`.
 ```text
 [CSV_CLIENT_PLOT];12482;1471;615;10147;1329;442;2;1;0
 ```
+- Format: [xxxxx] this is you filter criteria for UDP-LOG-VIEWER, Semicolon as devider from values. Number of values up to you, but this should be exactly used in the visualization configuration of your graph in UDP-LOG-VIEWER
+- [CSV_CLIENT_PLOT] : Example: this line represent some interesting Numbers created by your client software 
+- [CSV_HOST_PLOT] : Example: this line represent some interesting Numbers created by your host software 
+- [CSV_LONG_TERM_PLOT] : Example: this line represent some interesting Numbers for a long term analysis 
+- [feel_free] : feel free to use filter names as you like :-) 
+
 
 Meaning of the values:
 
