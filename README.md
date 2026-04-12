@@ -17,11 +17,6 @@ This example shows you mainly two things:
 
 So the output can go to the serial monitor and, if WiFi is available, to a UDP log receiver at the same time.
 
-## UDP-Log-Viewer
-<img width="1920" height="1243" alt="image" src="https://github.com/user-attachments/assets/03eec872-2a58-408f-9266-cb9e76fcb171" />
-
-(Background - live serial logging monitor)
-
 ## What is inside
 
 The project is intentionally small.
