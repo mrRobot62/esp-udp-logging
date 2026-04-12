@@ -234,7 +234,7 @@ You can use whatever UDP receiver you like.
 
 For a quick test on your computer, tools like `nc`, `ncat`, `socat`, Wireshark or your own small Python receiver will do the job, or you use my own [udp-viewer](https://github.com/mrRobot62/udp-viewer.git) written in Python.
 
-**One simple example with netcat can be:**
+**One simple example with netcat can be:** <br>
 (only checking if your PC get UDP messages - I don't know how to do this on Windows :-/)
 
 ```bash
@@ -242,13 +242,6 @@ nc -ul 10514
 ```
 
 Depending on your system, you maybe need `ncat` instead of `nc`, but the idea is the same: open a UDP listener on the port from `platformio.ini`.
-
-## Notes
-
-- This project is not trying to be a full reusable library package.
-- It is a small example first.
-- The code is kept close to the original project style, so moving between demo and real project is easy.
-- The WiFi connect is blocking for a short time during startup. For a demo, that is okay.
 
 ## Related files
 
