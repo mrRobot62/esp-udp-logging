@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "udp/fsd_udp.h"
+#include "log_transport.h"
 
 #ifdef INFO
 #undef INFO
@@ -20,14 +20,24 @@
 #define LOG_CORE_LINEBUF_SIZE 512
 #endif
 
-inline void logWriteUdpIfEnabled(const char *s, size_t n) {
+// Keep the legacy helper name while dispatching to the selected transport.
+inline void logWriteUdpIfEnabled(const char *s, size_t n, bool complete = true) {
 #if defined(WIFI_LOGGING_ENABLE) && (WIFI_LOGGING_ENABLE == 1)
+#if defined(WIFI_LOGGING_USE_TCP)
+    if (!complete) {
+        logging_transport::note_oversize();
+        return;
+    }
+#else
+    (void)complete;
+#endif
     if (s && n) {
-        udp::send_bytes(reinterpret_cast<const uint8_t *>(s), n);
+        logging_transport::send_bytes(reinterpret_cast<const uint8_t *>(s), n);
     }
 #else
     (void)s;
     (void)n;
+    (void)complete;
 #endif
 }
 
@@ -47,6 +57,7 @@ inline void logPrintPrefixToBuf(char *out, size_t out_size, const char *tag, con
     }
 }
 
+// Format once; retain Serial output and reject truncated TCP records.
 inline void logVPrintf(const char *tag, const char *level, const char *fmt, va_list args) {
     char line[LOG_CORE_LINEBUF_SIZE];
     char prefix[64];
@@ -67,12 +78,13 @@ inline void logVPrintf(const char *tag, const char *level, const char *fmt, va_l
     }
 
     size_t total = p_len + static_cast<size_t>(n);
+    const bool complete = total < sizeof(line);
     if (total >= sizeof(line)) {
         total = sizeof(line) - 1;
     }
 
     logWriteSerial(line, total);
-    logWriteUdpIfEnabled(line, total);
+    logWriteUdpIfEnabled(line, total, complete);
 }
 
 inline void logPrintf(const char *tag, const char *level, const char *fmt, ...) {
@@ -82,6 +94,7 @@ inline void logPrintf(const char *tag, const char *level, const char *fmt, ...) 
     va_end(args);
 }
 
+// Format an unprefixed call with the same transport overflow policy.
 inline void logRawVPrintf(const char *fmt, va_list args) {
     char line[LOG_CORE_LINEBUF_SIZE];
 
@@ -94,12 +107,13 @@ inline void logRawVPrintf(const char *fmt, va_list args) {
     }
 
     size_t total = static_cast<size_t>(n);
+    const bool complete = total < sizeof(line);
     if (total >= sizeof(line)) {
         total = sizeof(line) - 1;
     }
 
     logWriteSerial(line, total);
-    logWriteUdpIfEnabled(line, total);
+    logWriteUdpIfEnabled(line, total, complete);
 }
 
 inline void logRawPrintf(const char *fmt, ...) {

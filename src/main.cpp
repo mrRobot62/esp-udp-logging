@@ -3,7 +3,8 @@
 #include "log_client.h"
 #include "log_core.h"
 #include "log_csv.h"
-#include "udp/fsd_udp.h"
+#include "log_transport.h"
+#include "version.h"
 
 namespace {
 
@@ -93,27 +94,29 @@ void emit_demo_logs(uint32_t now_ms) {
 
 } // namespace
 
+// Initialize the demo and selected logging transport.
 void setup() {
     Serial.begin(115200);
     delay(500);
 
-    INFO("Booting esp-udp-logging example\n");
+    INFO("Booting esp-logging-demo %s\n", ESP_LOGGING_DEMO_VERSION);
     CLIENT_INFO("----------------------------------------------\n");
-    CLIENT_INFO("- ESP32 UDP logging demo with CSV output    ---\n");
+    CLIENT_INFO("- ESP32 %s logging demo with CSV output ---\n", logging_transport::name());
     CLIENT_INFO("----------------------------------------------\n");
-    CLIENT_INFO("This demo is made to test Serial + UDP output together\n");
+    CLIENT_INFO("This demo tests Serial + %s output together\n", logging_transport::name());
     CLIENT_INFO("Use it with udp-viewer on your desktop side\n");
 
-    const bool udp_ok = udp::begin("CLIENT");
-    if (udp_ok) {
-        INFO("UDP logging ready\n");
+    const bool logging_ok = logging_transport::begin("CLIENT");
+    if (logging_ok) {
+        INFO("%s logging initialized (TCP connects asynchronously)\n", logging_transport::name());
     } else {
-        WARN("UDP logging disabled or unavailable\n");
+        WARN("%s logging disabled or unavailable\n", logging_transport::name());
     }
 
-    udp::diag_print();
+    logging_transport::diag_print();
 }
 
+// Emit demo samples independently of the TCP worker.
 void loop() {
     const uint32_t now = millis();
     if ((now - last_log_ms) >= 500U) {

@@ -1,0 +1,106 @@
+  Wir arbeiten am Projekt esp-udp-logging (ESP-UDP-Demo).
+
+Git-Repository:
+https://github.com/mrRobot62/esp-udp-logging.git
+
+Lokales Projektverzeichnis:
+/Users/bernhardklein/workspace/arduino/esp32/esp-udp-logging
+
+Bitte im vorhandenen lokalen Checkout arbeiten und zuerst prüfen, ob dessen Git-Remote dem genannten Repository entspricht. Kein erneutes Klonen und keine vorhandenen lokalen Änderungen überschreiben.
+
+Ziel:
+Neben dem bestehenden UDP-Logging soll ein separat implementierter TCP-Client verfügbar sein. Das öffentliche Logging-Interface muss identisch bleiben, sodass bestehender Anwendungscode unverändert weiterverwendet werden kann. Der Anwender wählt das Transportprotokoll zur Build-Zeit über platformio.ini.
+
+Bitte zuerst Repository-Anweisungen, Git-Stand, vorhandene lokale Änderungen, Logging-API, UDP-Implementierung und PlatformIO-Konfiguration untersuchen. Danach einen konkreten Architekturvorschlag vorlegen.
+
+Keine Implementierung ohne meine vorherige Freigabe.
+Vor Terminalbefehlen die konkreten Befehle und ihren Zweck nennen und meine Freigabe einholen. Zusammengehörige Befehle dürfen gebündelt werden.
+
+das neue esp-logging-demo projekt hat die Version 0.2.0
+
+Anforderungen:
+
+1. Einheitliches öffentliches Logging-Interface
+- Bestehende Aufrufe, Makros, Log-Level und Formatierungsfunktionen erhalten.
+- Anwendungscode darf keine transportspezifischen Verzweigungen benötigen.
+- Unterschiede ausschließlich intern bei Transportauswahl und Übertragung behandeln.
+- Falls die bestehende Initialisierung angepasst werden muss, dies vorab erläutern und abstimmen.
+
+2. Separate Transportimplementierungen
+- UDP-Implementierung erhalten und weiterhin vollständig unterstützen.
+- TCP-Client in separaten Dateien/Klassen implementieren.
+- Gemeinsame Formatierung und Logging-Logik möglichst wiederverwenden.
+- Eine schlanke gemeinsame Transportabstraktion oder Factory vorsehen, soweit dies zur vorhandenen Architektur passt.
+- Keine umfangreiche, sachfremde Umstrukturierung.
+
+3. Auswahl über platformio.ini
+- UDP/TCP zur Compile-Zeit über build_flags oder die bereits etablierte Konfigurationsmechanik auswählen.
+- UDP bleibt Standard, wenn keine Auswahl angegeben ist.
+- Ungültige oder widersprüchliche Einstellungen müssen einen verständlichen Build-Fehler auslösen.
+- Konkrete Namen der Konfigurationsoptionen nach Prüfung des Projekts vorschlagen.
+- Zieladresse und Port konfigurierbar machen; bestehende UDP-Konfiguration kompatibel halten.
+- TCP benötigt eine konkrete Server-IP oder einen Hostnamen, keinen Broadcast und nicht 0.0.0.0.
+- Beide Varianten müssen getrennt baubar sein.
+
+4. Gegenstelle: UDP Log Viewer 0.18.0
+Der Viewer unterstützt bereits folgenden TCP-Server:
+- IPv4, konfigurierbarer Port, beispielsweise 10514.
+- Ein aktiver TCP-Client gleichzeitig.
+- Zusätzliche Clients werden abgewiesen.
+- UTF-8-Nachrichten mit LF oder CRLF als Zeilenabschluss.
+- TCP ist ein Byte-Strom: Nachrichten können auf mehrere Übertragungen verteilt oder zusammen empfangen werden.
+- Maximal 1 MiB pro Nachrichteninhalt ohne Zeilenabschluss.
+- Bei Überschreitung trennt der Server den Client.
+- Unvollständige Nachrichten am Verbindungsende werden verworfen.
+- Leere und ausschließlich aus Leerraum bestehende Zeilen werden ignoriert.
+- Nach einem Client-Abbruch lauscht der Server weiter und akzeptiert eine neue Verbindung.
+- Keine automatische Server-Erkennung, keine Anwendungs-ACKs und kein TLS im vereinbarten Protokoll.
+
+5. TCP-Nachrichtenübertragung
+- Jede vollständige Logzeile mit genau einem passenden Zeilenabschluss übertragen.
+- Bestehende Zeilenabschlüsse berücksichtigen, damit keine zusätzlichen Leerzeilen entstehen.
+- Teilweise erfolgreiche Schreibvorgänge korrekt behandeln; nicht annehmen, dass write() alle Bytes übernimmt.
+- Nachrichten verschiedener Aufrufe oder Tasks dürfen sich nicht vermischen.
+- Eine auf dem ESP sinnvoll begrenzte Nachrichten- und Queuegröße vorsehen. Das Serverlimit von 1 MiB ist ausdrücklich keine Empfehlung für den ESP-Puffer.
+- Speicherverbrauch begrenzen; keine unbegrenzt wachsende Queue.
+- Verhalten bei zu langen Nachrichten oder voller Queue vorab festlegen.
+
+6. Verbindungslebenszyklus und Verhalten bei Fehlern
+- TCP-Verbindungsaufbau, Wiederverbindung und Versand dürfen die Hauptanwendung nicht über längere Zeit blockieren.
+- Vorhandene Task-/Loop-/WLAN-Architektur berücksichtigen.
+- Wiederverbindung mit begrenztem Backoff; keine schnelle Endlosschleife.
+- WLAN-Verlust, Server-Neustart, Verbindungsabweisung und langsame Gegenstelle zuverlässig behandeln.
+- Keine zusätzlichen Heartbeats als normale Logzeilen senden.
+- Fehler des Netzwerkloggings dürfen keine rekursive Protokollierung über denselben fehlerhaften Transport auslösen.
+- Klar festlegen, ob Logs bei fehlender Verbindung verworfen oder begrenzt zwischengespeichert werden.
+- Bei Verbindungsabbruch während einer teilweise versendeten Nachricht niemals nur deren Rest über eine neue Verbindung senden.
+- Wiederholung oder Verwerfen dieser Nachricht vorab abstimmen. Ohne Anwendungs-ACK lässt sich keine Exactly-once-Zustellung garantieren.
+- Kein stiller automatischer Wechsel von TCP auf UDP.
+
+Vor der Implementierung ausdrücklich abstimmen:
+- Gemeinsames Interface und Trennung der Transportimplementierungen.
+- Konkrete platformio.ini-Optionen.
+- Verbindungsverwaltung: eigener Task, bestehender Worker oder loop()-Integration.
+- Queue- und Nachrichtenlimits.
+- Verhalten bei Queueüberlauf, Offline-Betrieb und teilweisem Versand.
+- Reconnect-Strategie und Zeitlimits.
+- Notwendige Abhängigkeiten und unterstützte ESP-/Framework-Varianten.
+
+Tests und Prüfung:
+- Bestehende UDP-Funktionalität und API-Kompatibilität absichern.
+- Beide PlatformIO-Transportvarianten bauen.
+- TCP-Framing, UTF-8, partielle Schreibvorgänge, Queuegrenzen und Reconnect testen.
+- WLAN-/Server-Ausfälle und unterbrochene Nachrichten berücksichtigen.
+- Integration mit dem beschriebenen Viewer-Protokoll prüfen.
+- Klar unterscheiden zwischen automatisierten Tests, erfolgreichen Builds und tatsächlichen Hardwaretests. Nicht durchgeführte Hardwaretests ausdrücklich benennen.
+- Neue und geänderte Klassen/Funktionen mit kurzen, aussagekräftigen Docstrings bzw. passenden C++-Kommentaren dokumentieren.
+
+Arbeitsweise:
+- Vorhandene lokale Änderungen erhalten.
+- Größere Entscheidungen und Fortschritte kurz auf Deutsch erklären.
+- Auf einem eigenen Feature-Branch arbeiten; Branchname vorab abstimmen.
+- Abhängige Git-Operationen strikt nacheinander ausführen.
+- Benutzer- und technische Dokumentation erst nach erfolgreichem Test und meiner separaten Freigabe erstellen.
+- Commit, Push, Merge und Veröffentlichung ausschließlich nach entsprechender ausdrücklicher Anweisung.
+
+Bitte mit der Bestandsanalyse und dem Architekturvorschlag beginnen.

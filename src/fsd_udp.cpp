@@ -1,6 +1,7 @@
 #include "udp/fsd_udp.h"
+#include "log_transport_config.h"
 
-#if defined(WIFI_LOGGING_ENABLE) && (WIFI_LOGGING_ENABLE == 1)
+#if (defined(WIFI_LOGGING_USE_UDP) || defined(WIFI_LOGGING_USE_TCP)) && defined(WIFI_LOGGING_ENABLE) && (WIFI_LOGGING_ENABLE == 1)
 
 #include <Arduino.h>
 #include <WiFi.h>
